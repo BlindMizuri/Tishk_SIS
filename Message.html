@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Email Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Send Email</h2>
+
+    <form id="emailForm">
+        <label for="recipientEmail">Recipient Email:</label>
+        <input type="email" id="recipientEmail" name="recipientEmail" required>
+
+        <label for="emailSubject">Email Subject:</label>
+        <input type="text" id="emailSubject" name="emailSubject" required>
+
+        <label for="emailContent">Email Description:</label>
+        <textarea id="emailContent" name="emailContent" rows="4" required></textarea>
+
+        <label for="fileAttachment">File Attachment:</label>
+        <input type="file" id="fileAttachment" name="fileAttachment">
+
+        <button type="button" onclick="sendEmail()">Send Email</button>
+    </form>
+
+    <script>
+        async function sendEmail() {
+            const sendGridApiKey = 'your_sendgrid_api_key'; // Replace with your SendGrid API key
+
+            const url = 'https://api.sendgrid.com/v3/mail/send';
+
+            const recipientEmail = document.getElementById('recipientEmail').value;
+            const emailSubject = document.getElementById('emailSubject').value;
+            const emailContent = document.getElementById('emailContent').value;
+            const fileInput = document.getElementById('fileAttachment');
+            const fileAttachment = fileInput.files[0];
+
+            const formData = new FormData();
+            formData.append('file', fileAttachment);
+
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${sendGridApiKey}`
+                },
+                body: formData
+            };
+
+            try {
+                const response = await fetch(url, options);
+                const result = await response.json();
+                console.log(result);
+
+                // You can handle success or show a confirmation message here
+                alert('Email sent successfully!');
+            } catch (error) {
+                console.error(error);
+                
+                // Handle the error or show an error message
+                alert('Error sending email. Please try again.');
+            }
+        }
+    </script>
+
+</body>
+</html>
